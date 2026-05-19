@@ -78,6 +78,32 @@ const DEFAULT_SERVICES: Service[] = [
 // LocalStorage Keys
 const STORAGE_KEY = 'barbershop_pos_db';
 
+// Safe Storage wrapper to prevent Safari/iOS Private Browsing mode from crashing
+const safeStorage = {
+  getItem(key: string): string | null {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.warn('LocalStorage is not accessible (Private mode?):', e);
+      return null;
+    }
+  },
+  setItem(key: string, value: string): void {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn('LocalStorage is not writable (Private mode?):', e);
+    }
+  },
+  removeItem(key: string): void {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.warn('LocalStorage is not writable (Private mode?):', e);
+    }
+  }
+};
+
 // Supabase Connection Status Check
 const isSupabaseConfigured = (): boolean => {
   return !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
@@ -151,7 +177,7 @@ const mapTransactionFromDb = (t: any): Transaction => ({
 
 // Check database initialization
 export const initializeDb = (): DbState => {
-  const localData = localStorage.getItem(STORAGE_KEY);
+  const localData = safeStorage.getItem(STORAGE_KEY);
   if (localData) {
     try {
       const parsed = JSON.parse(localData) as DbState;
@@ -175,7 +201,7 @@ export const initializeDb = (): DbState => {
         supabaseAnonKey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
         isSupabaseConnected: isSupabaseConfigured()
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+      safeStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
       return parsed;
     } catch (e) {
       console.error('Error parsing local storage, reinitializing', e);
@@ -197,7 +223,7 @@ export const initializeDb = (): DbState => {
     }
   };
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+  safeStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
   return newState;
 };
 
@@ -208,7 +234,7 @@ export const db = {
   },
 
   saveState(state: DbState) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    safeStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   },
 
   // ====================================================
@@ -652,7 +678,7 @@ export const db = {
   },
 
   resetDatabase(): void {
-    localStorage.removeItem(STORAGE_KEY);
+    safeStorage.removeItem(STORAGE_KEY);
     initializeDb();
 
     // Optionally truncate supabase tables in development if desired.

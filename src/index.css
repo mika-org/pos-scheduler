@@ -103,7 +103,10 @@ html, body {
   text-align: left;
 }
 
-.tooltip-container:hover .tooltip-content {
+.tooltip-container:hover .tooltip-content,
+.tooltip-container:focus .tooltip-content,
+.tooltip-container:focus-within .tooltip-content,
+.tooltip-container:active .tooltip-content {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);

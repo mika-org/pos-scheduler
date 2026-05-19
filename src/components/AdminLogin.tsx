@@ -11,6 +11,19 @@ interface AdminLoginProps {
   addToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
+// Safe storage helper to prevent crash in Safari Private Browsing mode
+const safeSetItem = (key: string, value: string, useSession: boolean): void => {
+  try {
+    if (useSession) {
+      sessionStorage.setItem(key, value);
+    } else {
+      localStorage.setItem(key, value);
+    }
+  } catch (e) {
+    console.warn('Storage is not accessible (Private browsing mode?):', e);
+  }
+};
+
 export const AdminLogin: React.FC<AdminLoginProps> = ({
   onLogin,
   onNavigate,
@@ -64,11 +77,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
         const token = await signJwt(payload, jwtSecret);
 
         // 4. Save the signed token based on Remember Me preference
-        if (remember) {
-          localStorage.setItem('admin_token', token);
-        } else {
-          sessionStorage.setItem('admin_token', token);
-        }
+        safeSetItem('admin_token', token, !remember);
 
         addToast('Sign-In berhasil! Sesi admin diamankan dengan JWT.', 'success');
         setIsLoading(false);
@@ -96,11 +105,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 2 // 2 Hours expiry
         };
         const token = await signJwt(payload, 'offline-fallback-secret-999');
-        if (remember) {
-          localStorage.setItem('admin_token', token);
-        } else {
-          sessionStorage.setItem('admin_token', token);
-        }
+        safeSetItem('admin_token', token, !remember);
 
         addToast('Offline Fallback: Sign-In berhasil! Mode luring aktif.', 'info');
         setIsLoading(false);

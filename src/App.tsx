@@ -7,10 +7,26 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { useToast, ToastContainer } from './components/ui/CustomComponents';
 import { verifyJwt } from './utils/jwt';
 
+// Safe storage wrappers to prevent Safari Private Mode from throwing SecurityErrors
+const getStorageItem = (key: string): string | null => {
+  try {
+    return sessionStorage.getItem(key) || localStorage.getItem(key);
+  } catch (e) {
+    return null;
+  }
+};
+
+const removeStorageItem = (key: string): void => {
+  try {
+    sessionStorage.removeItem(key);
+    localStorage.removeItem(key);
+  } catch (e) {}
+};
+
 function App() {
   const [view, setView] = useState<'landing' | 'login' | 'dashboard'>('landing');
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
-    return !!sessionStorage.getItem('admin_token') || !!localStorage.getItem('admin_token');
+    return !!getStorageItem('admin_token');
   });
   const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
   const [dbState, setDbState] = useState<DbState>(() => db.getState());
@@ -19,7 +35,7 @@ function App() {
 
   // Asynchronously verify JWT session token on mount
   const checkToken = async () => {
-    const token = sessionStorage.getItem('admin_token') || localStorage.getItem('admin_token');
+    const token = getStorageItem('admin_token');
     if (token) {
       const jwtSecret = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'default-secret-key-12345';
       const payload = await verifyJwt(token, jwtSecret);
@@ -40,8 +56,7 @@ function App() {
         // Token is tampered, expired or invalid
         setIsAdminAuthenticated(false);
         setAdminUser(null);
-        sessionStorage.removeItem('admin_token');
-        localStorage.removeItem('admin_token');
+        removeStorageItem('admin_token');
         setView('landing');
         addToast('Sesi JWT kedaluwarsa atau tidak valid. Silakan masuk kembali.', 'error');
         return false;
@@ -118,8 +133,7 @@ function App() {
   const handleLogout = () => {
     setIsAdminAuthenticated(false);
     setAdminUser(null);
-    sessionStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_token');
+    removeStorageItem('admin_token');
     setView('landing');
     addToast('Anda berhasil keluar dari sesi Admin.', 'info');
   };

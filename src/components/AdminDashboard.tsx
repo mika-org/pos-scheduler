@@ -894,7 +894,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   <div className="font-semibold text-slate-100 flex items-center gap-1.5">
                                     <span>{b.customerName}</span>
                                     {b.notes && b.notes.trim() && (
-                                      <span className="tooltip-container">
+                                      <span className="tooltip-container outline-none" tabIndex={0}>
                                         <FileText className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400 cursor-help shrink-0" />
                                         <span className="tooltip-content">
                                           <span className="font-bold block border-b border-slate-800 pb-1 mb-1 text-amber-500 text-[10px] uppercase">Catatan Booking</span>
@@ -1035,7 +1035,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div className="flex items-center gap-1.5">
                                   <span>{b.customerName}</span>
                                   {b.notes && b.notes.trim() && (
-                                    <span className="tooltip-container">
+                                    <span className="tooltip-container outline-none" tabIndex={0}>
                                       <FileText className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400 cursor-help shrink-0" />
                                       <span className="tooltip-content">
                                         <span className="font-bold block border-b border-slate-800 pb-1 mb-1 text-amber-500 text-[10px] uppercase">Catatan Booking</span>
