@@ -348,11 +348,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
 
     return Object.entries(revenueMap).map(([date, amount]) => {
-      // Format date e.g. "19 Mei"
-      const dateObj = new Date(date);
+      // YYYY-MM-DD safe parsing for Safari
+      const parts = date.split('-');
+      let dateObj: Date;
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // 0-indexed month
+        const day = parseInt(parts[2], 10);
+        dateObj = new Date(year, month, day);
+      } else {
+        dateObj = new Date(date);
+      }
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const dayNum = isNaN(dateObj.getDate()) ? '' : dateObj.getDate();
+      const monthStr = isNaN(dateObj.getMonth()) ? '' : months[dateObj.getMonth()];
       return {
-        name: `${dateObj.getDate()} ${months[dateObj.getMonth()]}`,
+        name: `${dayNum} ${monthStr}`.trim() || date,
         Pendapatan: amount
       };
     });
