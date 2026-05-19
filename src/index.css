@@ -70,3 +70,66 @@ html, body {
 .glow-indigo {
   box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.3);
 }
+
+/* Note Tooltip styles */
+.tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tooltip-content {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 125%;
+  left: -8px;
+  transform: translateY(4px);
+  background-color: #0b0f19; /* Sleek dark theme backdrop matching index.css */
+  border: 1px solid rgba(217, 119, 6, 0.4); /* Amber-600 with opacity */
+  color: #e2e8f0; /* slate-200 */
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: normal;
+  min-width: 180px;
+  max-width: 260px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7);
+  z-index: 50;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  text-align: left;
+}
+
+.tooltip-container:hover .tooltip-content {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tooltip Arrow */
+.tooltip-content::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 14px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #0b0f19 transparent transparent transparent;
+}
+
+/* Border for the arrow */
+.tooltip-content::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 14px;
+  border-width: 7px;
+  border-style: solid;
+  border-color: rgba(217, 119, 6, 0.4) transparent transparent transparent;
+  z-index: -1;
+  transform: translateX(-1px);
+}
+

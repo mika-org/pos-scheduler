@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import {
   LayoutDashboard, Calendar, CreditCard, Plus, Trash2, Check,
   AlertTriangle, Download, Upload, Database, LogOut, Home, DollarSign,
-  UserCheck, RefreshCw, Ban, CheckSquare, Scissors, Users
+  UserCheck, RefreshCw, Ban, CheckSquare, Scissors, Users, FileText
 } from 'lucide-react';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
@@ -891,7 +891,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               <tr key={b.id} className="hover:bg-slate-900/20 group">
                                 <td className="py-3.5 pl-2 font-bold text-amber-500 font-heading text-sm">{b.bookingTime}</td>
                                 <td className="py-3.5">
-                                  <div className="font-semibold text-slate-100">{b.customerName}</div>
+                                  <div className="font-semibold text-slate-100 flex items-center gap-1.5">
+                                    <span>{b.customerName}</span>
+                                    {b.notes && b.notes.trim() && (
+                                      <span className="tooltip-container">
+                                        <FileText className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400 cursor-help shrink-0" />
+                                        <span className="tooltip-content">
+                                          <span className="font-bold block border-b border-slate-800 pb-1 mb-1 text-amber-500 text-[10px] uppercase">Catatan Booking</span>
+                                          {b.notes}
+                                        </span>
+                                      </span>
+                                    )}
+                                  </div>
                                   <div className="text-[10px] text-slate-500">{b.customerPhone}</div>
                                 </td>
                                 <td className="py-3.5 text-slate-300 font-semibold">{b.serviceName}</td>
@@ -1020,7 +1031,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                           return (
                             <tr key={b.id} className="hover:bg-slate-900/20">
-                              <td className="py-3 pl-2 font-semibold text-slate-100">{b.customerName}</td>
+                              <td className="py-3 pl-2 font-semibold text-slate-100">
+                                <div className="flex items-center gap-1.5">
+                                  <span>{b.customerName}</span>
+                                  {b.notes && b.notes.trim() && (
+                                    <span className="tooltip-container">
+                                      <FileText className="w-3.5 h-3.5 text-amber-500 hover:text-amber-400 cursor-help shrink-0" />
+                                      <span className="tooltip-content">
+                                        <span className="font-bold block border-b border-slate-800 pb-1 mb-1 text-amber-500 text-[10px] uppercase">Catatan Booking</span>
+                                        {b.notes}
+                                      </span>
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
                               <td className="py-3 text-slate-400 font-medium">{b.customerPhone}</td>
                               <td className="py-3 text-slate-400 font-medium">{b.bookingDate}</td>
                               <td className="py-3 text-amber-500 font-bold font-heading">{b.bookingTime} WIB</td>
